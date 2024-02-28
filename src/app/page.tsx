@@ -1,113 +1,170 @@
+"use client";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Header from "@/components/global/Header";
+import SearchIconImg from "../../public/assets/images/searchInputIcon.svg";
+import styles from "@/styles/app/App.module.css";
+import headerStyles from "@/styles/header/SecondHeader.module.css";
+import HotelCard from "@/components/hotel/HotelCard";
+import HotelGroup from "@/components/hotel/HotelGroup";
+import { retrieveChains, retrieveHotels } from "@/services/api/LocalStorage";
+import { hotelContext } from "@/services/store/HotelContext";
+import { CircularProgress, Stack } from "@mui/material";
 
 export default function Home() {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isAllActive, setIsAllActive] = useState<boolean>(true);
+  const [isActive, setIsActive] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // fetching context states
+  const { setHotels, hotels, setHotelChains, hotelChains } =
+    useContext(hotelContext);
+
+  // initiating router
+  const router = useRouter();
+
+  // useEffect to make api call
+  useEffect(() => {
+    // retrieving local storage data
+    const storageHotels = retrieveHotels("hotels");
+    const storageChains = retrieveChains("chains");
+
+    // validating retrieved hotels data
+    if (!storageHotels || storageHotels === null) {
+      setLoading(false);
+      return;
+    }
+
+    // initiating a constant data for hotels
+    const allHotels = storageHotels;
+
+    // checking to ensure constant data !== hotels context state
+    if (allHotels === hotels) {
+      setLoading(false);
+      return;
+    } else {
+      // setting hotels context state to allHotels retrieved from local storage
+      setHotels(allHotels);
+      setLoading(false);
+    }
+
+    // validating retrieved hotel chains data
+    if (!storageChains || storageChains === null) return;
+
+    // initiating a constant data for hotel chains
+    const allChains = storageChains;
+
+    // checking to ensure constant data !== hotelChains context state
+    if (allChains === hotelChains) {
+      return;
+    } else {
+      // setting hotels context state to allHotels retrieved from local storage
+      setHotelChains(allChains);
+    }
+
+    setLoading(false);
+  }, [loading]);
+
+  // router to admin page
+  const onClickHandler = () => {
+    router.push("/admin");
+  };
+
+  // loader
+  if (loading)
+    return (
+      <div className="w-full flex items-center justify-center mt-5">
+        <Stack sx={{ color: "grey.500" }} spacing={2} direction="row">
+          <CircularProgress sx={{ color: "#ff8000" }} />
+        </Stack>
+      </div>
+    );
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="flex flex-col w-full pb-10">
+      <Header buttonText="Manage Hotels" onClick={onClickHandler} />
+      <div className={headerStyles.container}>
+        <div
+          id=""
+          className="flex flex-row items-center w-[80%] md:w-3/5 bg-white h-[40px] rounded-xl pl-1 sm:pl-6 pr-[24px] ms-pr-[0px] shadow-smWhite"
+        >
+          <Image
+            className="w-[20px] h-[20px]"
+            src={SearchIconImg}
+            alt="search icon"
+          />
+          <input
+            className="h-[35px] w-[90%] md:w-[70%] pl-1 sm:pl-6 ms:pl-12 text-sm sm:text-lg outline-none"
+            placeholder="Search for hotels by name"
+            value={searchTerm}
+            onChange={(event) => {
+              if (event.target.value === "") {
+                setIsAllActive(true);
+                setSearchTerm("");
+                setIsActive("");
+              } else {
+                setSearchTerm(event.target.value);
+                setIsActive(event.target.value);
+                setIsAllActive(false);
+              }
+            }}
+          />
         </div>
       </div>
+      {!loading && hotels.length === 0 ? (
+        <div className="w-full flex items-center justify-center text-xs ms:text-base lg:text-xl sl:text-5xl text-red-900 text-center pt-10">
+          NO HOTEL REGISTERED!! CLICK MANAGE HOTELS TO REGISTER A HOTEL.
+        </div>
+      ) : (
+        <React.Fragment>
+          <>
+            <div className="flex flex-row gap-2 justify-center mt-5 mb-3 flex-wrap h-auto flex-1 basis-2/6">
+              {hotelChains.map((ch) => (
+                <HotelGroup name={ch.name} id={ch.id} key={ch.id} />
+              ))}
+            </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <div className={styles.hotelDiv}>
+              {hotels
+                .filter((data) => {
+                  if (searchTerm == "") {
+                    return data;
+                  } else if (
+                    data.name?.toLowerCase().includes(searchTerm.toLowerCase())
+                  ) {
+                    return data;
+                  }
+                })
+                .map((data) => (
+                  <div
+                    className={`${
+                      searchTerm === isActive ||
+                      isActive === data.name ||
+                      isAllActive
+                        ? "flex flex-col gap-1 shadow-smBoxWhite items-center"
+                        : "hidden"
+                    }`}
+                    key={data.id}
+                  >
+                    <HotelCard
+                      city={data.city}
+                      name={data.name}
+                      address={data.address}
+                      country={data.country}
+                      ranking={data.ranking}
+                      chain={data.chain}
+                      id={data.id}
+                      key={data.id}
+                      picture={data.picture}
+                    />
+                  </div>
+                ))}
+            </div>
+          </>
+        </React.Fragment>
+      )}
+    </div>
   );
 }
