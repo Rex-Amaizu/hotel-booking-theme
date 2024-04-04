@@ -1,25 +1,25 @@
-export type THotels = {
-  name: string;
-  city: string;
-  country: string;
-  address: string;
-  picture: string;
-  id: string;
-  chain: string;
-  ranking: string;
+export type TUser = {
+  travellerName: string;
+  travellerEmail: string;
 };
 
-export type TData = {
-  name: string;
-  city: string;
-  country: string;
-  address: string;
-  picture: string;
-  id: string;
-  chain: string;
-  ranking: string;
+export type TFlightDetails = {
+  departureCity: string;
+  departureAirport: string;
+  destinationCity: string;
+  destinationAirport: string;
+  flightDate: string;
+  flightClass: string;
+  availableFlights: {
+    airLine: string;
+    flightDuration: string;
+    flightType: string;
+    departtureTime: string;
+    arrivalTime: string;
+    flightPrice: string;
+  }[];
 };
 
-export type TChains = Pick<THotels, "name" | "id">;
+// export type TChains = Pick<THotels, "name" | "id">;
 
-export type TChainResult = { name: string; id: number }[];
+// export type TChainResult = { name: string; id: number }[];

@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  background-color: #3d5654;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}

@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 10px;
+  height: 65px;
+  width: 100%;
+  background-color: #425c5a;
+  padding-left: 65px;
+}
+
+@media (max-width: 1400px) {
+  .container {
+    padding-left: 40px;
+    border-right-width: 0px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+  }
+}

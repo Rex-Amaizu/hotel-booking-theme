@@ -9,10 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        sms: "365px",
         sm: "480px",
+        smx: "515px",
+        xms: "540px",
         ms: "600px",
+        msx: "650px",
+        mdx: "720px",
         md: "768px",
         lg: "976px",
+        ls: "1150px",
         sl: "1280px",
         xl: "1440px",
       },
@@ -27,6 +33,28 @@ const config: Config = {
       },
       boxShadow: {
         smBoxWhite: "0px 4px 4px rgba(0, 0, 0, 0.1)",
+      },
+      zIndex: {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+      },
+      borderWidth: {
+        DEFAULT: "1px",
+        "0.5": "0.5px",
+        "1": "1px",
+        "0": "0",
+        "2": "2px",
+        "3": "3px",
+        "4": "4px",
+        "6": "6px",
+        "8": "8px",
+        "9": "2px solid #425c5a",
+      },
+      borderRadius: {
+        "50g": "50%",
       },
     },
   },

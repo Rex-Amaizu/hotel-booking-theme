@@ -1,0 +1,37 @@
+.circleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Adjust as needed */
+  position: relative;
+}
+
+.circle1 {
+  position: absolute;
+  width: 80px; /* Adjust as needed */
+  height: 80px; /* Adjust as needed */
+  border-radius: 50%; /* Make it a circle */
+  border: 2px solid #d6a217;
+  background: #3d5654;
+  border-top: 1px lightslategray;
+  border-right: 2px solid #d6a217;
+  border-left: 1px solid #a48b46;
+  border-bottom: 2px solid #a48b46;
+}
+
+.circle2 {
+  position: absolute;
+  width: 70px; /* Adjust as needed */
+  height: 70px; /* Adjust as needed */
+  border-radius: 50%; /* Make it a circle */
+  margin: -50px; /* Adjust the margin to make it smaller and centered */
+}
+
+/* .circle3 {
+  position: absolute;
+  width: 80px; 
+  height: 80px; 
+  border-radius: 50%; 
+  border: 2px solid blue; 
+  margin: -25px; 
+} */
