@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "@/styles/header/Navbar.module.css";
+import styles from "@/styles/header/NavBar.module.css";
 import Dashboard from "./Dashboard";
 import Flights from "./Flights";
 import Wallet from "./Wallet";
